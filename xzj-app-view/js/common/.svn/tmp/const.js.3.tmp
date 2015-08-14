@@ -1,0 +1,14 @@
+var const_server_url='http://192.168.1.11:8080/xzj-app/';
+
+//token 过期时间(相对于服务端应该稍微少一些)
+var const_token_expire = 30*60*1000;
+// 是否出现登录异常情况 防止多个ajax 请求弹出多个alert框
+var const_is_error_login=0;
+// 图片地址
+var IMAGE_DOMAIN = "http://images.xuanzejia.com/";
+// 首页图片大小定义
+var IMAGE_160_160 = "@160w_160h.jpg";
+// 详情页图片
+var IMAGE_350_350 = "@350w_350h.jpg";
+// 商品查询页
+var IMAGE_80_80 = "@80w_80h.jpg";

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<style>
+		body,.mui-content{background: #fff;}
+	</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<h1 class="mui-title">定位失败</h1>
+	</header>
+	<div class="mui-content location-failed">
+		<div class="mui-icon iconfont icon-jinggao"></div>
+		<p>
+			您已禁止GPS城市定位,请立即开启！<br />
+			否则您将无法进入店铺购买！
+		</p>
+		<div class="mui-text-center">
+			<button class="mui-btn mui-btn-negative">立即开启</button>
+		</div>
+	</div>
+	
+	<script src="../../js/mui.min.js"></script>
+	<script>
+	
+	</script>
+</body>
+
+</html>

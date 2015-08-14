@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+
+<body id="target-container">
+	<script id="shoppingCart" type="text/template" >
+		<header class="mui-bar mui-bar-nav webview-bar">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left"></a>
+		  	<h1 class="mui-title">购物车</h1>
+		</header>
+		{{ if(it.code=="200"){ }}
+		<div class="mui-content" >
+			<ul class="mui-table-view cartList" id="shoppingCartUl">
+				{{~it.shoppingCartList:sc:index}}
+				{{ if(sc.product != null){ }}
+				<li class="mui-table-view-cell mui-media" id="li-{{=sc.cart_id}}">
+					<div class="cartList-pic mui-pull-left">
+						<a href=""><img src="{{=sc.product.productImage}}" /></a>
+					</div>
+					<div class="mui-media-body cartList-info">
+						<a class='mui-ellipsis-2'>{{=sc.product.product_name}}</a>
+						<div class="cartList-price">
+							价格：<em>￥{{=sc.product.sale_price}}</em>
+						</div>
+						<div class="cartList-tax">
+							<span>税率：{{=sc.product.tax_scale}}%</span>
+							<span>税金：￥{{=sc.product.xy_price}}</span>
+						</div>
+						<div class="cartList-num">
+							数量：
+							<div class="mui-numbox" data-numbox-min='1' data-numbox-max='99'>
+								<button class="mui-btn mui-numbox-btn-minus minus-qty" type="button" value="{{=sc.cart_id}}">-</button>
+								<input class="mui-numbox-input" type="number" id="qty-{{=sc.cart_id}}" value="{{=sc.qty}}" />
+								<button class="mui-btn mui-numbox-btn-plus plus-qty" type="button" value="{{=sc.cart_id}}" >+</button>
+							</div>
+						</div>
+						<button class="mui-btn mui-btn-outlined cartList-btn-del del-qty" value="{{=sc.cart_id}}">删除</button>
+					</div>
+				</li>
+				{{ } }}
+				{{~}}
+			</ul>
+		</div>
+		<div class="mui-bar carList-settlement" id="settlementDiv">
+			<div class="cartList-setinfo">
+				<span>商品金额:￥<label id="product_price">{{=it.order.product_price}}</label>&nbsp;&nbsp;&nbsp;税金:￥<label id="order_xy_tax">{{=it.order.order_xy_tax}}</label></span>
+				<em>（单笔订单商品总税金不满50免税金）</em>
+				<span class="cartList-setinfo-total">
+					<b>总计:￥<label id="order_price">{{=it.order.order_price}}</label></b> (不含邮费)
+				</span>
+			</div>
+			<button class="mui-btn mui-btn-negative" id="skipSettlement">结算</button>
+		</div>
+	 	{{ }else{ }}
+	 	<div class="mui-content" >
+		 	<div class="shopping-none"></div>
+			<div class="mui-text-center">
+				<button class="mui-btn mui-btn-negative btn-cart-gohome" id="skipMain">去首页逛逛</button>
+			</div>
+		</div>
+		{{ } }}
+	</script>
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js" type="text/javascript"></script> 
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script>
+	<script src="../../js/view/shoppingCart.js" type="text/javascript"></script>
+</body>
+<script>
+<<<<<<< .mine
+ShoppingCart.load();
+window.addEventListener('refresh',function(event){
+	ShoppingCart.load();
+ });
+=======
+	mui.plusReady(function() {
+		ShoppingCart.load();
+	});
+ 	window.addEventListener('refresh',function(event){
+		ShoppingCart.load();
+	});
+>>>>>>> .r1757
+</script>
+</html>

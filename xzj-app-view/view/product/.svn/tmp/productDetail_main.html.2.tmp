@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+<body>
+	<script id="product-tmpl" type="text/template">
+		<div id="slider" class="mui-slider prDetail-slide">
+			<input type="hidden" id="product_status" value="{{=it.product.product_status}}"/>
+			<div class="mui-slider-group">
+				{{~it.product.product_images:obj}}
+				<input type="hidden" id="product_no" value="{{=it.product.product_no}}"/>
+				<div class="mui-slider-item">
+					<a href="#">
+						<img src="{{=IMAGE_DOMAIN}}{{=obj}}{{=IMAGE_350_350}}">
+					</a>
+				</div> 
+				{{~}}
+			</div>
+			<div class="mui-slider-indicator">
+				{{~it.product.product_images:obj:index}}
+					{{ if(index == 0){ }}
+						<div class="mui-indicator mui-active"></div>
+					{{ }else{ }}
+						<div class="mui-indicator"></div>
+					{{}}}
+				{{~}}
+			</div>
+		</div>
+		<div class="prDetail-titleTnfo">
+			<div class="prDetail-price">
+				<em>￥{{=it.product.sale_price}}</em>
+				<del>￥{{=it.product.market_price}}</del>
+			</div>
+			<h2>
+				{{=it.product.product_name}}
+			</h2>
+			<p>{{=it.product.product_brief}}</p>
+			<div>
+				购买数量：
+				<div class="mui-numbox" data-numbox-min='1' data-numbox-max='99'>
+					<button class="mui-btn mui-numbox-btn-minus sub-count" type="button">-</button>
+					{{ if(it.product.available_qty >0){ }}
+						<input class="mui-numbox-input" type="number" value="1" readonly="readonly"/>
+					{{ }else{ }}
+						<input class="mui-numbox-input" type="number" value="0" readonly="readonly"/>
+					{{ } }}
+					<button class="mui-btn mui-numbox-btn-plus add-count" type="button">+</button>
+				</div>
+				<input id="available_qty" type="hidden" value="{{=it.product.available_qty}}" />
+				<span class="prDetail-stock">（库存：{{=it.product.available_qty}}件）</span>
+			</div>
+		</div>
+		<div class="prDetail-buyInfo">
+			<h2>购买须知</h2>
+			<div class="prDetail-tips">
+				<b>提示：</b>
+				<span>本商品将会直接从保税区发货，在发货前需要进行商品报关及检疫，一般情况下5个工作日内发货，请您谅解。</span>
+			</div>
+			<div class="prDetail-tax J_tax">
+				<b>税率：</b>
+				<span>本商品适用税率10%</span>
+			</div>
+		</div>
+		<div class="prDetail-info" id="prDetail">
+			<div class="prDetail-tab">
+				<a class="mui-col-xs-6 active J_tab-menu" data-url="items1">图文详情</a>
+				<a class="mui-col-xs-6 J_tab-menu" data-url="items2">产品参数</a>
+			</div>
+			<div class="prDetail-info-cont J_tab-content" id="items1">
+				{{=it.product.app_product_content}}
+			</div>
+            <div class="prDetail-info-cont J_tab-content" id="items2" style="display: none;">
+				<ul class="prDetail-para">
+					<li>
+						<span>商品编码：</span>
+						<p>{{=it.product.product_no}}</p>
+					</li>
+					<li>
+						<span>品牌：</span>
+						<p>
+							{{ if(it.product.brand_name == null){ }}
+								暂无品牌
+							{{ }else{ }}
+								{{=it.product.brand_name}}
+							{{ } }}
+						</p>
+					</li>
+					<li>
+						<span>规格：</span>
+						<p>{{=it.product.product_spec}}</p>
+					</li>
+					<li>
+						<span>产品重量：</span>
+						<p>{{=it.product.product_weight}} KG</p>
+					</li>
+				</ul>
+			</div>
+		</div>	
+	</script>
+	<div class="mui-content pd-btm" id="product-container">
+	
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/view/product.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script> 
+	<script>
+		$(function(){
+			getHeight();
+		});
+		window.addEventListener('productNo',function(event){
+		  //获得事件参数
+		  var product_no = event.detail.product_no;
+		  var flag = event.detail.flag;
+		  Product.productInit(product_no,flag);
+		});
+		function getHeight(){
+			var h = $(window).height()-$(".prDetail-tab").height();
+			$(".prDetail-info-cont").css("min-height",h+"px");
+			
+		}
+		window.addEventListener('to_product',function(event){
+		  var qty = $('.mui-numbox-input').val();
+		  var product_no = $('#product_no').val();
+		  Product.addCartCount(product_no,qty);
+		});
+		//增加产品数量
+		$("body").on("tap",".add-count",function(){
+			var numbox = parseInt($('.mui-numbox').find('input').val());
+			var available_qty = $('#available_qty').val();
+			if(numbox+1 <= available_qty){
+				$('.mui-numbox').find('input').val(numbox+1);
+			}else{
+				mui.toast("数量超出范围");
+			}
+		});
+		//减少产品数量
+		$("body").on("tap",".sub-count",function(){
+			var numbox = parseInt($('.mui-numbox').find('input').val());
+			var available_qty = $('#available_qty').val();
+			if(numbox-1 >= 1){
+				$('.mui-numbox').find('input').val(numbox-1);
+			}else{
+				mui.toast("数量不能再小了");
+			}
+		});
+		//手动输入购买产品数
+		$("body").on("change",".mui-numbox-input",function(){
+			var checkNum = /^[0-9]*[1-9][0-9]*$/;
+			var num = $(this).val();
+			if(!checkNum.test(num) || num.trim()==''){
+				$(this).val(1);
+			}
+			var available_qty = $('#available_qty').val();
+			if(parseInt(num) > parseInt(available_qty)){
+				$(this).val(available_qty);
+			}
+		});
+
+	</script>
+</body>
+
+</html>

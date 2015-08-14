@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<link href="../../css/mui.listpicker.css" rel="stylesheet" />
+	<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<h1 class="mui-title">手机号登录</h1>
+	</header>
+	<div class="mui-content address-wrap">
+		<form class="login login-phone" id="validation-form">
+			<div class="mui-input-row">
+				<label>+86 |</label>
+				<input  id="mobile" name="mobile"  type="number" class="mui-input-clear login-input" placeholder="请输入手机号码">
+			</div>
+			<button class="mui-btn mui-btn-negative login-btn" type="button" id="nextRegister">下一步</button>
+			<p class="register-term">继续登录表示已经阅读并同意<span>《选择佳服务条款》</span></p>
+		</form>
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js" ></script>
+	<script src="../../js/common/appajax.js"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/common/mlogin.js"></script>
+	<script src="../../js/common/timer.js"></script>
+	<script src="../../js/view/login.js"></script>
+	<script src="../../js/update/update_version.js"></script>
+	<script>
+		mui.plusReady(function(){
+		  	setTimeout(function()
+			{ 
+			   checkUpdate()
+			}, 1000);
+			
+		   if(m_login.hasLogin())
+		   {
+		   		if(m_login.checkHasAgency()){
+		   			m_login.toIndex();
+		   		}else{
+		   			m_login.toLocation();
+		   		} 
+	       }else{
+	       		m_login.setDeviceId(plus.device.uuid);
+	       }
+			setTimeout(function()
+			{ 
+			   plus.navigator.closeSplashscreen();
+			}, 600);
+			
+			plus.key.addEventListener('backbutton', mui.back);
+		})
+<<<<<<< .mine
+		$("#nextRegister").on('tap',Login.register);
+	})
+	
+=======
+		$("#nextRegister").on('tap',Login.register);
+		
+		var first = null;
+			mui.back = function(){
+		    //首次按键，提示‘再按一次退出应用’
+		    if(!first){
+		        first = new Date().getTime();
+		        mui.toast('再按一次退出应用');
+		        setTimeout(function(){
+		            first = null;
+		        },1000);
+		    }else{
+		        if(new Date().getTime()-first<1000){
+		           plus.runtime.quit();
+		       }
+		}
+		    return false;
+		} 
+>>>>>>> .r2192
+	</script>
+</body>
+
+</html>

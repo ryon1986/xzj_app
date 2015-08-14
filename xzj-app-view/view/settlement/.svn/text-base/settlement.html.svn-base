@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+
+<body id="target-container">
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">确认订单</h1>
+	</header>
+	
+	<div class="mui-bar prDetail-cart">
+		<div class="mui-pull-left mui-text-center">
+			<span class="settlement-totle">
+				总计:￥<span id="order_price">0.00</span>
+			</span>
+			<em>（单笔订单商品总税金不满50免税金）</em>
+		</div>
+		<button class="mui-btn mui-btn-negative mui-pull-right" id="placeOrder">提交订单</button>
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script>
+	<script>
+	mui.plusReady(function() {
+		mui.preload({
+			url: '/view/address/chooseAddress.html',
+			id:'chooseAddress'
+		});
+	});
+	window.addEventListener('settlement-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			var receiverId = event.detail.receiver_id;
+			if(typeof(receiverId)=="undefined"){
+				receiverId = -99;
+			}
+			var settlement_main = plus.webview.getWebviewById('settlement_main');
+			mui.fire(settlement_main,'settlement-main-refresh',{receiver_id:receiverId,isdo:"true"});
+		}
+	});
+	mui.init({
+	    subpages:[{
+	      url:"settlement_main.html",
+	      id:"settlement_main",
+	      styles:{
+	        top:"44px",
+	        bottom:"50px",
+	      },
+	      extras:{}//额外扩展参数
+	    }]
+	});
+	window.addEventListener('order-price-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			var order_price = event.detail.order_price;
+			if(typeof(order_price)!="undefined"){
+				$("#order_price").text(order_price.toFixed(2));
+			}
+		}
+	});
+	//下单
+	$("body").on("tap","#placeOrder",function(){
+		var settlement_main = plus.webview.getWebviewById('settlement_main');
+		mui.fire(settlement_main,'place-order',{isdo:"true"});
+	});
+	</script>
+</body>
+
+</html>

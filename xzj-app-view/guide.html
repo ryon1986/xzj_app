@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>选择佳1</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="css/mui.min.css">
+		<style>
+			#close {
+				position: absolute;
+				width: 160px;
+				left: 50%;
+				margin-left: -80px;
+				bottom: 15%;
+				padding: 10px;
+				color: #fff;
+				border-color: #fff;
+			}
+			.item-logo {
+				width: 100%;
+				height: 100%;
+				position: relative;
+			}
+			.animate {
+				position: absolute;
+				left: 0;
+				bottom: 8%;
+				width: 100%;
+				color: #fff;
+				display: -moz-box;
+			}
+			@media only screen and (max-height:567px ) {
+				.animate {
+					position: absolute;
+					left: 0;
+					bottom: 33%;
+					width: 100%;
+					color: #fff;
+					display: -moz-box;
+				}
+			}
+		</style>
+		
+	</head>
+
+	<body>
+		<div id="slider" class="mui-slider mui-fullscreen">
+			<div class="mui-slider-group">
+				<!-- 第一张 -->
+				<div class="mui-slider-item">
+					<div class="item-logo" style="background: url(img/bg01.png) no-repeat #1bc7d1; background-size:100% auto;">
+					</div>
+				</div>
+				<!-- 第二张 -->
+				<div class="mui-slider-item">
+					<div class="item-logo" style="background: url(img/bg02.png) no-repeat #12a6ec; background-size:100% auto;">
+						<div class="animate">
+							<button id='close' class="mui-btn mui-btn-warning mui-btn-outlined">立即体验</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<div class="mui-indicator"></div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.4.min.js" ></script>
+		<script type="text/javascript" src="js/common/const.js" ></script>
+		<script type="text/javascript" src="js/common/appajax.js" ></script>
+		<script src="js/common/mlogin.js"></script>
+		<script>
+			mui.plusReady(function() {
+				plus.runtime.getProperty(plus.runtime.appid,function(inf){
+			        wgtVer=inf.version;
+			        if(window.localStorage.getItem("ver")==wgtVer&&window.localStorage.getItem('isShow')=='false'){
+			        	setTimeout("m_login.checkRedirect()",100)
+			        }else{
+			        	window.localStorage.setItem("ver",wgtVer);
+			        }
+			    });
+				if(mui.os.ios){
+					plus.navigator.setFullscreen(true);
+				}
+				setTimeout(function(){
+					plus.navigator.closeSplashscreen()
+				},2000);
+				
+			});
+			//立即体验按钮点击事件
+			document.getElementById("close").addEventListener('tap', function(event) {
+				window.localStorage.setItem('isShow', 'false');
+				plus.navigator.setFullscreen(false);
+				m_login.checkRedirect();
+				//plus.webview.currentWebview().close();
+			}, false);
+		</script>
+	</body>
+
+</html>

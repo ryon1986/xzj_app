@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<style>
+		body{background: #fff;}
+	</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">关于我们</h1>
+	</header>
+	<div class="mui-content">
+		<div class="term">
+			<div class="mui-text-center">
+				<br/>
+				<img style="width:72px;height:72px;" src="../../img/logo.png"/>
+				<br/><br/>
+				<span style="font-size: 20px;">选择佳</span>(v0.1.0)<br/>
+				<p class="mui-text-center">www.xuanzejia.com</p><br/>
+			</div>
+			<p class="des">
+				HTML5中国产业联盟，简称“HTML5+ 联盟”，是为了更好的推进HTML5的商用、更好的为HTML5开发者服务而由产业链主流厂商共同组成的一个联盟<br/>
+　　 			HTML5+规范的愿景：根据开发者需求，为其提供增强的功能、性能扩展规范。方便开发者开发跨平台的app，并接近原生的功能和性能。
+			</p>
+			<p class="mui-text-center" style="width:100%;margin-top: 50px;">
+				版权所有<br />
+				Copyright © 2015  卓益信息科技有限责任公司
+			</p>
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+</body>
+
+</html>

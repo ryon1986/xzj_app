@@ -1,0 +1,44 @@
+
+// 初始化ajax配置
+$.ajaxSetup({
+　　　　timeout: 30000,
+　　　　//请求之前触发
+	　　beforeSend: function (xhr) {
+			//var flag=m_login.checkTokenExpired();
+			//m_login.setToken("013146b13d5a201ee687de4f420f19d7");
+			//每次请求会带一个token过去
+			if(this.data == undefined||""==this.data){
+				if(this.url.indexOf("?") >= 0){
+					this.url=this.url+"&token="+m_login.getToken();
+				}else{
+					this.url=this.url+"?token="+m_login.getToken();
+				}
+			}else{
+				this.data="token="+m_login.getToken()+"&"+this.data;
+			}
+			if(m_login.getToken()==null){
+				m_login.autoLogin();
+			}
+		},
+		dataType:"json",
+		cache:false, 
+　　　　 complete: function (XHR, TS) {
+			//判断token是否无效 如果无效 跳转登录页面 (此步骤 一般不会触发 除非服务端token 删除才会)
+			if(XHR.status=='200'){
+					var str= XHR.responseText;
+				    var dataJson = eval('(' + str + ')');
+					if(dataJson.code=='10002'){
+						setTimeout(function(){
+									m_login.toLogin();  
+								},
+						1000);
+					}
+				}else{
+						setTimeout(function(){
+								mui.toast('服务器异常')
+							},
+						1000);
+				}
+			  }
+　　}
+);

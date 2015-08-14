@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+<<<<<<< .mine
+
+<body>
+=======
+<script id="logistics-tmpl" type="text/template">
+	{{ if(it.code=="200"){ }}
+>>>>>>> .r2285
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">查看物流</h1>
+	</header>
+	<div class="mui-content" id="target-container">
+		
+	</div>
+	<script id="orderDetail" type="text/template">
+		{{ if(it.code=="200"){ }}
+		<div class="orderStatus">
+			<div class="logistics-logo mui-pull-left">
+				<img src="../../img/logo_ems.png" />
+			</div>
+			<h2>{{=it.orderDetail.express_name}}</h2>
+			<div class="orderNum">订单编号：{{=it.orderDetail.order_no}}<br />物流状态：{{=it.orderDetail.orderStatus}}</div>
+		</div>
+		<ul class="mui-table-view orderStatus-list">
+			<li class="mui-table-view-cell mui-media title">商品信息</li>
+			{{~it.orderDetail.products:product}}
+			<li class="mui-table-view-cell mui-media product-deatil-class">
+				<input type="hidden" value="{{=product.product_no}}" />
+				<div class="orderStatus-pic">
+					<a href=""><img src="{{=product.productImage}}" /></a>
+				</div>
+				<div class="mui-media-body orderStatus-title">
+					<a class='mui-ellipsis-2'>{{=product.product_name}}</a>
+				</div>
+				<div class="orderStatus-tax">
+					<span>￥{{=product.sale_price}}</span>
+					<em>x {{=product.buy_qty}}</em>
+				</div>
+			</li>
+			{{~}}
+		</ul>
+		<div class="logistics">
+			<h2>物流信息</h2>
+			<div class="logistics-list">
+				<div class="line"></div>
+				<ul class="mui-table-view">
+					{{~it.expresList:expres:index}}
+					{{ if(index==0){ }}
+					<li class="mui-table-view-cell active">
+					{{ }else{ }}
+					<li class="mui-table-view-cell">
+					{{ } }}
+						<span class="dot"></span>{{=expres.express_info}}<br />{{=expres.express_time}}
+					</li>
+					{{~}}
+				</ul>	
+			</div>
+		</div>
+<<<<<<< .mine
+	{{ } }}	
+	</script>
+	
+=======
+	</div>
+	{{ } }}
+</script>
+<body id="logistics-container">xxxx
+	</body>
+>>>>>>> .r2285
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/view/order.js"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script> 
+	<script src="../../js/view/main.js" type="text/javascript"></script>
+	<script>
+	mui.plusReady(function() {
+		alert(plus.webview.currentWebview().id);
+	})
+	window.addEventListener('logistics-refresh',function(event){
+		var order_no = event.detail.order_no;
+		Order.logisticsLoad(order_no);
+	});
+	//商品详情
+	$("body").on("tap",".product-deatil-class",function(){
+		Home.productDetail($(this).find("input").val());
+	});
+	</script>
+
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+<script id="j-tmpl" type="text/template">
+				{{ if(it.code == "200"){ }}
+					{{ if(typeof(it.listReceiver) != "undefined"){ }}
+					 	 {{~it.listReceiver:obj}}
+		                       	<li class="mui-table-view-cell address-li" >
+		                       		<input type="hidden" value="{{=obj.receiver_id}}" />
+								    <a class="mui-navigate-right" >
+								      	<span class="address-name">{{ if(obj.receiver_status==1){ }}<em>默认</em> {{ } }}{{=obj.receiver_name}}&nbsp;&nbsp;&nbsp;&nbsp;{{=obj.receiver_mobile}}</span>
+								      	<span class="address-addr">{{=obj.receiver_address}}</span>
+								    </a>
+								 </li>
+		                {{~}}
+		               {{ }else{ }} 
+		               		<h2>暂无地址信息</h2>
+		               {{ } }}
+		            {{ }else{ }}
+			        <h2>出错了，错误信息：{{=it.message}}</h2>
+				{{ } }}
+			</script>	
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">收货地址</h1>
+	</header>
+	<div class="mui-content address-wrap">
+		<ul class="mui-table-view address-list">
+			<li class="mui-table-view-cell">
+			    <a class="mui-navigate-right J_addr">
+			    	<span class="mui-icon iconfont icon-add"></span>新增收货地址
+			    </a>
+			  </li>
+		</ul>
+		<ul class="mui-table-view address-list" id="target-container">
+		</ul>
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+    <script src="../../js/common/appajax.js" ></script>
+    <script src="../../js/common/mlogin.js" ></script>
+	<script>
+	
+	//$("#target-container").tmpl('j-tmpl',const_server_url+"/1/iaddress/iaddressList.json");
+	 
+	mui.plusReady(function() {
+		mui.preload({
+			id:'editAddress',
+			url:'editAddress.html'   
+		});
+		mui.preload({
+			id:'addAddress',
+			url:'addAddress.html'   
+		});
+	});
+	
+		$("body").on("tap",".address-li",function(){
+			var id = $(this).find("input").val();
+			var wv = plus.webview.getWebviewById('editAddress');
+				mui.fire(wv,'editRefresh',{
+					//自定义参数,例如ID
+					 receiver_id:id
+				});
+			mui.openWindow({
+				id:'editAddress'
+			});
+		});
+		$("body").on("tap",".J_addr",function(){
+			var wv = plus.webview.getWebviewById('addAddress');
+				mui.fire(wv,'addRefresh');
+			    mui.openWindow({
+				id:'addAddress'
+			  });
+			});
+			
+	window.addEventListener('refresh',function(event){
+		//获得事件参数
+		$("#target-container").tmpl('j-tmpl',const_server_url+"/1/iaddress/iaddressList.json");
+	});
+	</script>
+</body>
+
+</html>

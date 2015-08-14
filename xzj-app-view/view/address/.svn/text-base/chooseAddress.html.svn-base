@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<link href="../../css/mui.listpicker.css" rel="stylesheet" />
+	<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+</head>
+<script id="j-tmpl" type="text/template">
+		{{ if(it.code == "200"){ }}
+			{{ if(typeof(it.listReceiver) != "undefined"){ }}
+					 	 {{~it.listReceiver:obj}}
+		                       <li class="mui-table-view-cell add-ress">
+								    <a >
+								    	<input  type="hidden" id="id" value="{{=obj.receiver_id}}" />
+								      	<span name="ress" class="address-name" data-id="{{=obj.receiver_id}}">{{ if(obj.receiver_status==1){ }}<em>默认</em> {{ } }}{{=obj.receiver_name}}&nbsp;&nbsp;&nbsp;&nbsp;{{=obj.receiver_mobile}}</span>
+								      	<span class="address-addr">{{=obj.receiver_address}}</span>
+								    </a>
+								</li>
+		                {{~}}
+		       {{ }else{ }} 
+		               		<h2>请添加地址信息</h2>
+		         {{ } }}
+		 {{ }else{ }}
+			      <h2>出错了，错误信息：{{=it.message}}</h2>
+		{{ } }}
+	</script>
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">收货地址</h1>
+	</header>
+	<div class="mui-content address-wrap">
+		<ul class="mui-table-view address-list">
+			<li class="mui-table-view-cell">
+			    <a class="mui-navigate-right addr">
+			    	<span class="mui-icon iconfont icon-add"></span>新增收货地址
+			    </a>
+			  </li>
+		</ul>
+		<ul class="mui-table-view address-list" id="target-container"></ul>
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" ></script>
+    <script src="../../js/common/mlogin.js" ></script>
+    <script src="../../js/view/address.js" type="text/javascript"></script>
+	<script>
+		var id;
+		window.addEventListener('chooseAddress-refresh',function(event){
+			plus.nativeUI.showWaiting();
+			if(event.detail.isdo == "true"){
+				id = event.detail.receiver_id;
+				$("#target-container").tmpl('j-tmpl',const_server_url+"/1/address/list.json",callback);
+			}
+		});
+		
+		$("body").on("tap",".add-ress",function(){
+			var receiverId = $(this).find("input").val();
+			var settlement = plus.webview.getWebviewById('settlement');
+			mui.fire(settlement,'settlement-refresh',{receiver_id:receiverId,isdo:"true"});
+			mui.back();
+		}); 
+		
+		 function callback()
+		 {
+		 	plus.nativeUI.closeWaiting();
+		 	$("span[name='ress']").each(function(){
+		  	 if($(this).attr('data-id')==id)
+		  	 {
+		  	 	$(this).addClass('address-selected')
+		  	 }
+           })
+		 }
+		
+		$('.addr').on('tap', function() {
+			var addAddress = plus.webview.getWebviewById('addAddress');
+			mui.fire(addAddress,'addRefresh',{flag:1,isdo:"true"});
+			mui.back();
+			mui.openWindow({
+			    id: 'addAddress'
+			});
+		});
+		
+	</script>
+</body>
+
+</html>

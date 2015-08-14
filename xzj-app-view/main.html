@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title> 
+	<link href="css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/common.css" />
+	<link rel="stylesheet" href="css/iconfont.css" />
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav top-bar">
+		<a class="mui-pull-left store_name J_stroe-name" id="agency-container"></a>
+		<a class="mui-pull-right scancode">
+			<span class=" iconfont icon-saoyisao"></span> 扫一扫
+		</a>
+		<form method="post" id="search-form" onsubmit="Home.productSearch($('#ipt-search').val());return false;">
+			<div class="mui-input-row top-search">
+				<span class="mui-icon mui-icon-search"></span>
+				<input type="search" id="ipt-search" class="mui-input-clear" placeholder="搜索商品">
+			</div>
+		</form>
+	</header>
+	<div class="store_fullname">众康一号店众康一号店</div>
+	<script id="agency-tmpl" type="text/template">
+		{{ if(it.code == "200"){ }}
+			<input type="hidden" id="agency_no" value="{{=it.agency.agency_no}}"/>
+			<input type="hidden" id="agency_name" value="{{=it.agency.agency_name}}"/>
+			{{=it.agency.agency_name}}
+		{{ } }}
+	</script>
+	<script id="j-tmpl" type="text/template">
+		{{ if(it.code == "200"){ }}
+			 <div class="mui-slider">
+				<div class="mui-slider-group">
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="javascript:">
+							<img src="img/banner.png" />
+						</a>
+					</div>
+				</div> 
+		  	</div>
+			{{~it.product:obj}}
+			{{ if(obj.product_group_type == 1){ }}
+			<section class="recommend">
+				<h2 class="cate-title mui-clearfix">
+					<span class="mui-pull-left">
+						<em class="mui-icon iconfont icon-zuanshisolid"></em>
+						{{=obj.product_group_name}}			
+					</span> 
+				</h2>
+				<div class="main-prlist mui-clearfix">
+					<ul>
+						{{~obj.listProduct:product1:index}} 
+						<li>
+							<a class="product-deatil-class" >
+								<input type="hidden" value="{{=product1.product_no}}" />
+								<div class="prList-img">
+									{{ if(product1.product_status == "0"){ }}
+										<em class="shelf-off">已下架</em>
+										<span class="shelf-off-w"></span>
+									{{ } }}
+									{{ if(product1.available_qty <= 0){ }}
+										<em class="soldout">售罄</em>
+										<span class="soldout-w"></span>
+									{{ } }}
+									<img class="mui-media-object" src="{{=IMAGE_DOMAIN}}{{=product1.product_image}}{{=IMAGE_160_160}}" />
+								</div>
+								<div class="main-prlist-title">{{=product1.product_name}}</div>
+							</a>
+							<div class="main-prlist-op">
+								<div class="main-prlist-price mui-pull-left">
+									<em>￥<span class="money-init">{{=product1.sale_price}}</span></em>
+									<del>￥<span class="money-init">{{=product1.market_price}}</span></del>
+								</div>
+								{{ if(product1.available_qty > 0){ }}
+									<button class="main-prlist-cart mui-pull-right add-cart-class" {{ if(product1.product_status == "0"){ }}disabled="disabled"{{ } }}>
+										加入购物车 
+									</button>
+								{{ }else{ }}
+									<button class="main-prlist-cart mui-pull-right" disabled="disabled">
+										已售罄
+									</button>
+								{{ } }}
+							</div>
+						</li>
+						{{~}}
+					</ul>
+				</div>
+			</section>
+			{{ }else{ }}
+			<section class="cate-01">
+				<h2 class="cate-title mui-clearfix">
+					<span class="mui-pull-left">
+						<em class="iconfont icon-shuxian"></em>
+						{{=obj.product_group_name}}	
+					</span>
+					<a class="mui-pull-right group-more-class">
+						<input type="hidden" value="{{=obj.product_group_id}}">MORE >
+					</a>
+				</h2>
+				<div class="main-prlist mui-clearfix">
+					<ul>
+						{{~obj.listProduct:product}}
+						<li>
+							<a class="product-deatil-class">
+								<input type="hidden" value="{{=product.product_no}}" />
+								<div class="prList-img">
+									{{ if(product.product_status == "0"){ }}
+										<em>已下架</em>
+										<span></span>
+									{{ } }}
+									{{ if(product.available_qty <= 0){ }}
+										<em class="soldout">售罄</em>
+										<span class="soldout-w"></span>
+									{{ } }}
+									<img class="mui-media-object" src="{{=IMAGE_DOMAIN}}{{=product.product_image}}{{=IMAGE_160_160}}">
+								</div>
+								<div class="main-prlist-title">{{=product.product_name}}</div>
+							</a>
+							<div class="main-prlist-op">
+								<div class="main-prlist-price mui-pull-left">
+									<em>￥<span class="money-init">{{=product.sale_price}}</span></em>
+									<del>￥<span class="money-init">{{=product.market_price}}</span></del>
+								</div>
+ 								{{ if(product.available_qty > 0){ }}
+									<button class="main-cate-cart mui-pull-right add-cart-class" {{ if(product.product_status == "0"){ }}disabled="disabled"{{ } }}>
+										<span class="iconfont icon-lumigouff580e">
+							      		</span>
+									</button>
+								{{ }else{ }}
+									<button class="main-prlist-cart mui-pull-right" disabled="disabled">
+										已售罄
+									</button>
+								{{ } }}
+							</div>
+						</li>
+						{{~}}
+					</ul>
+				</div>
+			</section>
+			{{ } }} 
+			{{~}}
+		{{ }else{ }}
+		<h2>出错了，错误信息：{{=it.message}}</h2> 
+		{{ } }}
+	</script>
+	<div class="mui-content mui-scroll-wrapper" id="indexFefresh">
+		<div class="mui-scroll" id="target-container">
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="js/mui.min.js"></script>
+	<script src="js/doT.min.js" type="text/javascript"></script>
+	<script src="js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="js/common/const.js" type="text/javascript"></script>
+	<script src="js/view/main.js" type="text/javascript"></script>
+	<script src="js/common/appajax.js" type="text/javascript"></script>
+	<script src="js/common/mlogin.js" type="text/javascript"></script>
+	<script>
+	mui.plusReady(function(){
+		Home.init();
+		mui.preload({
+		    id:'productDetail',
+		    url:'/view/product/productDetail.html'   
+		});
+		mui.preload({
+			id:'productCategory',
+			url:'/view/product/productCategory.html'
+		});
+		mui.preload({
+			id:'addAddress',
+			url:'/view/address/addAddress.html'   
+		});
+		mui.preload({
+			url: '/view/settlement/orderSuccess.html',
+			id:'orderSuccess'
+		});
+		mui.init({
+			pullRefresh : {
+				container:"#indexFefresh",
+				down : {
+				contentdown : "下拉可以刷新",
+				contentover : "释放立即刷新",
+				contentrefresh : "正在刷新...",
+				callback :pullfresh
+				}
+			}
+		});
+	}); 
+	function pullfresh(){
+		Home.init();
+		mui('#indexFefresh').pullRefresh().endPulldownToRefresh();
+	}
+	$(".scancode").on("tap",function(){
+		mui.openWindow({
+			url:'/view/barcode/barcode_scan.html',
+			id:'barcode_scan'
+		})
+	});
+	$(".J_stroe-name").on("tap",function(){
+		if($(".store_fullname").is(":hidden")){
+			$(".store_fullname").html($("#agency-container").html());
+			$(".store_fullname").show();
+		}else{
+			$(".store_fullname").hide();
+		}
+	})
+	//加入购物车
+	$("body").on("tap",".add-cart-class",function(){
+		if($(this).attr("disabled") != "disabled"){
+			Home.addCart($(this).parent().prev().find("input").val());
+		}else{
+			mui.toast("商品已下架!");
+		}
+	});
+	//商品详情
+	$("body").on("tap",".product-deatil-class",function(){
+		Home.productDetail($(this).find("input").val());
+	});
+	//分组更多More
+	$("body").on("tap",".group-more-class",function(){
+		Home.groupMore($(this).find("input").val());
+	});
+	window.addEventListener('main-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			Home.init();
+		}
+	});
+	</script>
+</body>
+
+</html>

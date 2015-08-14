@@ -1,0 +1,72 @@
+function pullfresh(){
+	mui('#refreshContainer').pullRefresh().endPulldownToRefresh();
+}
+//商品详情
+$("body").on("tap",".product-deatil-class",function(){
+	Home.productDetail($(this).find("input").val());
+});
+//加入购物车
+$("body").on("tap",".add-cart-class",function(){
+	Home.addCart($(this).parent().prev().find("input").val());
+});
+//分组更多More
+$("body").on("tap",".group-more-class",function(){
+	Home.groupMore($(this).find("input").val());
+});
+
+var Home = {
+	init:function() 
+	{
+		plus.nativeUI.showWaiting();
+		$("#target-container").tmpl('j-tmpl',"js/home.json",function(){
+			plus.nativeUI.closeWaiting();
+			mui.init({
+				pullRefresh : {
+					container:"#refreshContainer",
+					down : {
+					contentdown : "下拉可以刷新",
+					contentover : "释放立即刷新",
+					contentrefresh : "正在刷新...",
+					callback :pullfresh
+					}
+				}
+			}); 
+		});
+	},
+	addCart:function(product_no)
+	{ 
+		$.post(const_server_url+"1/shopping/add.json?product_no="+product_no,function(data){
+			if(data.code == '200'){
+				$.get(const_server_url+"1/shopping/find.json",function(data){
+					if(data.code == '200'){
+						var num = data.num;
+					    var index = plus.webview.getWebviewById('index');
+					    mui.fire(index,'set',{num:num});
+				}
+				},'json');
+			}else{
+				alert('无效的数据类型!');
+			}
+		},'json'); 
+	},
+	productDetail:function(product_no)
+	{
+		mui.openWindow({
+		    id:'productDetail.html',
+		    url: 'view/product/productDetail.html',
+		    extras:{
+              product_no:product_no
+            }
+		});
+	},
+	groupMore:function(product_group_id)
+	{
+		mui.openWindow({
+		    id:'productCategory.html',
+		    url: 'view/product/productCategory.html',
+		    extras:{
+              product_group_id:product_group_id
+            }
+		});
+	}
+}

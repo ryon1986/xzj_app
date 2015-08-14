@@ -1,0 +1,70 @@
+var ShoppingCart = {
+	load:function(){
+		plus.nativeUI.showWaiting(); 
+		$("#shoppingCart-container").tmpl("shoppingCart",const_server_url+"1/shopping/show.json",function(){
+			plus.nativeUI.closeWaiting();
+			if($("#shoppingCart-container").find("li").size()==0){
+				$("#shoppingCartEmpty").show();
+				$("#shoppingCart-container").parent().hide();
+				$("#settlementDiv").hide();
+			}else{
+				ShoppingCart.settlemet();
+				$("#shoppingCartEmpty").hide();
+				$("#settlementDiv").show();
+				$("#shoppingCart-container").parent().show();
+			}
+		});
+	},
+	settlemet:function(){
+		$("#settlement-container").tmpl("settlement",const_server_url+"1/order/getOrderPrice.json",function(){
+			$("#order_price").text($(".order_price").val());
+		});
+	},
+	edit:function(cart_id,qty){
+		$("#qty-"+cart_id).val(qty);
+		if(qty>0){
+			$.post(const_server_url+"1/shopping/edit.json",{"cart_id":cart_id,"qty":qty},function(data){
+				if(data.code=="200"){
+					ShoppingCart.settlemet();
+				}
+			},"json");
+		}
+	}
+	
+}
+$("body").on("tap","#skipSettlement",function(){
+	var settlement = plus.webview.getWebviewById('settlement');
+	mui.fire(settlement,'refresh');
+	mui.openWindow({
+	    id: 'settlement'
+	});
+});
+$("body").on("tap","#skipMain",function(){
+	mui.openWindow({
+	    url: '../../main.html',
+	    id: 'main'
+	});
+});
+$("body").on("tap",".minus-qty",function(){
+	var cart_id = $(this).val();
+	var qty = parseInt($("#qty-"+cart_id).val())-1;
+	ShoppingCart.edit(cart_id,qty);
+});
+$("body").on("tap",".plus-qty",function(){
+	var cart_id = $(this).val();
+	var qty = parseInt($("#qty-"+cart_id).val())+1;
+	ShoppingCart.edit(cart_id,qty);
+});
+$("body").on("tap",".del-qty",function(){ 
+	var cart_id = $(this).val();
+	$.post(const_server_url+"1/shopping/remove.json",{"cart_id":cart_id},function(data){
+		if(data.code=="200"){
+			$("#li-"+cart_id).remove();
+			if($("#target-container").find("li").size()==0){
+				ShoppingCart.load();
+			}else{
+				ShoppingCart.settlemet();
+			}
+		}
+	},"json");
+});

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">下单成功</h1>
+	</header>		
+	<div class="mui-content">
+		<ul class="mui-table-view orderSuccess">
+		  	<li class="mui-table-view-cell">
+		  		<span class="mui-icon iconfont icon-weixin1 mui-pull-left"></span>
+		   		<span class="pay-selected pay-span" id="wxpay">
+		   			<h4>微信支付</h4>
+		   			<p>推荐已安装微信客户端的用户使用</p>
+		   		</span>
+		  	</li>
+		  	<li class="mui-table-view-cell">
+		  		<span class="mui-icon iconfont icon-qianbaozhifu mui-pull-left"></span>
+		   		<span id="alipay" class="pay-span">
+		   			<h4>支付宝客户端支付</h4>
+		   			<p>推荐已安装支付宝客户端的用户使用</p>
+		   		</span>
+		  	</li>
+		</ul>  
+	</div>
+	<div class="mui-bar prDetail-cart">
+		<a class="mui-tab-item">
+			<span class="settlement-totle" >总计:￥<span id="orderDetail-container" class="money-init"></span></span>
+			<script id="orderDetail" type="text/template">
+				{{ if(it.code=="200"){ }}
+					{{=it.orderDetail.order_price}}
+				{{ }else{ }}
+					0.00
+				{{ } }}
+			</script>
+			<button class="mui-btn mui-btn-negative mui-pull-right" id="pay">支付</button>
+		</a>
+	</div>
+	
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js" type="text/javascript"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script>
+	<script src="../../js/view/order.js" type="text/javascript"></script>
+	<script src="../../js/common/timer.js" type="text/javascript"></script>
+	<script src="../../js/view/login.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/common.js"></script>
+	<script>
+	var order_no;
+	window.addEventListener('orderSuccess-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			order_no = event.detail.order_no;
+			if(typeof(order_no)=="undefined"){
+				$("#pay").hide();
+			}else{
+				$("#pay").show();
+			}
+			Order.detailLoad(order_no,function(){
+				if($("#orderDetail-container").text()=="0.00"){
+					$("#pay").attr("disabled","disabled");
+				}else{
+					$("#pay").removeAttr("disabled");
+				}
+			});
+		}
+	});
+	$("body").on("tap","#pay",function(){
+		var payId = $(".pay-selected").attr("id");
+		if($("#pay").attr("disabled")!="disabled"){
+			pay(payId);
+		}
+	});
+	$("body").on("tap",".mui-table-view-cell",function(){
+		$(".mui-table-view-cell").find(".pay-span").removeClass("pay-selected");
+		$(this).find(".pay-span").addClass("pay-selected");
+	});
+	// 检测是否安装支付服务
+	function checkServices(pc){
+		if(!pc.serviceReady){
+			var txt=null;
+			switch(pc.id){
+				case "alipay":
+				txt="检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？";
+				break;
+				default:
+				txt="系统未安装“"+pc.description+"”服务，无法完成支付，是否立即安装？";
+				break;
+			}
+			plus.nativeUI.confirm(txt,function(e){
+				if(e.index==0){
+					pc.installService();
+				}
+			},pc.description);
+		}
+	}
+	var pays={};
+	function plusReady(){
+		// 获取支付通道
+		plus.payment.getChannels(function(channels){
+			for(var i in channels){
+				
+				var channel=channels[i];
+				pays[channel.id]=channel;
+			}
+		},function(e){
+	
+		});
+	}
+	document.addEventListener('plusready',plusReady,false);
+	var w=null;
+	var pay_url=const_server_url+'1/pay/';
+	
+	function pay(id){
+		//检测是否安装了客户端服务
+		checkServices(pays[id]);
+		var url=pay_url;
+		if(id=='alipay'||id=='wxpay'){
+				url+=id;
+		}else{
+			plus.nativeUI.alert("不支持此支付通道！",null,"捐赠");
+			return;
+		}
+		url+='?order_no='+order_no;
+		w=plus.nativeUI.showWaiting();
+		// 请求支付订单
+		var xhr=new XMLHttpRequest();
+		xhr.onreadystatechange=function(){
+			switch(xhr.readyState){
+				case 4:
+				w.close();w=null;
+				if(xhr.status==200){
+					var order=xhr.responseText;
+					plus.payment.request(pays[id],order,function(result){
+						plus.nativeUI.alert("支付成功",function(){
+							mui.openWindow({
+							    url:"/view/settlement/paySuccess.html",
+							    id:"paySuccess"
+							});
+							mui.back();
+						},"");
+					},function(e){
+						plus.nativeUI.alert("",null,"支付失败："+e.code);
+					});
+				}else{
+					plus.nativeUI.alert("获取订单信息失败！",null,"");
+				}
+				break;
+				default:
+				break;
+			}
+		}
+		xhr.open('GET',url);
+		xhr.send();
+	}
+	</script>
+</body>
+
+</html>

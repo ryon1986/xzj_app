@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<h1 class="mui-title">我</h1>
+	</header>
+	<script id="my_center" type="text/template">
+		<ul class="mui-table-view user-b">
+		  <li class="mui-table-view-cell">
+		    <a class="mui-navigate-right my-order">
+		    	<span class="user-icon mui-icon iconfont icon-wodedingdan"></span>
+		    	我的订单
+		    	<span class="mui-pull-right mui-h6">查看全部订单</span>
+		    </a>
+		  </li>
+		</ul>
+		<ul class="mui-table-view mui-grid-view user-order-menu">
+			<li class="mui-table-view-cell mui-media mui-col-xs-3">
+				<a href="#">
+					<span class="mui-icon iconfont icon-daifukuan">
+						{{ if(it.waitForPay != "0" && it.waitForPay != "undefined"){ }}
+						<span class="mui-badge">{{=it.waitForPay}}</span>
+						{{  }  }}
+					</span>
+					<div class="mui-media-body">待付款</div>
+				</a> 
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-3">
+				<a href="#">
+					<span class="mui-icon iconfont icon-fahuo">
+						{{ if(it.waitForSend != "0"){ }}
+						<span class="mui-badge">{{=it.waitForSend}}</span>
+						{{  }  }}
+					</span>
+					<div class="mui-media-body">待发货</div>
+				</a>
+			</li> 
+			<li class="mui-table-view-cell mui-media mui-col-xs-3">
+				<a href="#">
+					<span class="mui-icon iconfont icon-yifahuo">
+						{{ if(it.alreadySent != "0"){ }}
+						<span class="mui-badge">{{=it.alreadySent}}</span>
+						{{  }  }}
+					</span>
+					<div class="mui-media-body">已发货</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-3">
+				<a href="#">
+					<span class="mui-icon iconfont icon-yiwanchengdingdan">
+					</span>
+					<div class="mui-media-body">已完成</div>
+				</a>
+			</li>
+		</ul>
+		<ul class="mui-table-view user-b">
+			<li class="mui-table-view-cell">
+				<a data-href="/view/address/addressList.html" class="mui-navigate-right J_user-list"><span class="user-icon mui-icon iconfont icon-dingwei"></span>收货地址</a>
+			</li>
+		  	<li class="mui-table-view-cell">
+		    	<a data-href="/view/user/oldShop.html" class="mui-navigate-right J_user-list"><span class="user-icon mui-icon iconfont icon-fuzhi"></span>我到过的店</a>
+		  	</li>
+		</ul>
+		<ul class="mui-table-view user-b">
+        	<li class="mui-table-view-cell">
+				<a href="tel:13845127845" class="mui-navigate-right J_user-list"><span class="user-icon mui-icon iconfont icon-iconfontbbgkefu"></span>我的客服</a>
+			</li>
+			<!--
+		  	<li class="mui-table-view-cell">
+		    	<a {{ if(it.mobile != ""){ }} {{="href='tel:"+it.mobile+"'"}} {{ } }}class="mui-navigate-right">
+		    		<span class="user-icon mui-icon iconfont icon-snimicshouji"></span>
+		    		拨打热线
+		    	</a>
+		  	</li>
+		  	-->
+		  	<li class="mui-table-view-cell">
+		    	<a data-href="help.html" class="mui-navigate-right"><span class="user-icon mui-icon iconfont icon-bangzhu"></span>帮助中心</a>
+		  	</li>
+		</ul>
+		<ul class="mui-table-view user-b">
+			<li class="mui-table-view-cell" >
+				<a class="mui-navigate-right J_user_logout"><span class="user-icon mui-icon iconfont icon-tuichuline64"></span>退出登录</a>
+			</li>
+		</ul>
+	</script>
+	<div class="mui-content">
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript" ></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/mui.min.js" type="text/javascript" ></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js"></script>
+	<script src="../../js/common/mlogin.js"></script>
+	<script>       
+		$(".mui-content").tmpl('my_center',const_server_url+"/1/center/getMyCenter.json");
+		mui.plusReady(function(){
+			var aniShow = 'pop-in';
+			$('body').on('tap', '.J_user-list', function(e) {
+				var id = $(this).attr('data-href');
+				mui.openWindow({
+					url: id,
+					show:{
+				      autoShow:true,
+				      aniShow:'pop-in'
+				   }, 
+				});
+			});
+			//绑定事件
+			$("body").on("tap",".J_user_logout",function(){
+				doLogout(this);
+			});
+			$("body").on("tap",".J_POI",function(){
+				doPOI();
+			});
+			$("body").on("tap",".my-order",function(){
+				goMyOrderList();
+			});
+		})
+		function doPOI(){
+			mui.openWindow({
+	   			url: 'location.html',
+			    id:'location'
+	  	    });
+		}
+		function goMyOrderList(){
+			mui.openWindow({
+	   			url: '../order/orderList.html',
+			    id:'orderList'
+	  	    });
+		}
+		
+		//退出登录
+		function doLogout(obj){
+			var btnArray = ['再逛逛','是的'];
+			mui.confirm('你确定退出登录吗？', '提示', btnArray, function(e) {
+				if (e.index == 1) {
+					$.get(const_server_url+"/1/login/logout.json",function(data){
+						alert(data.code)
+						if(data.code == "200"){
+							mui.openWindow({
+					   			url: 'registerPhone.html',
+							    id:'registerPhone'
+					  	    });
+						}else{
+							mui.alert(data.message);
+						}
+					});
+		        }
+			}); 
+		} 
+	</script>
+</body>
+
+</html>

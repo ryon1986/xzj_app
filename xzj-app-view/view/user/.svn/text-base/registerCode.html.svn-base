@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/common.css" />
+		<link rel="stylesheet" href="../../css/iconfont.css" />
+		<link href="../../css/mui.listpicker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav webview-bar">
+			<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" id="returnLast"></a>
+			<h1 class="mui-title">一键登录</h1>
+		</header>
+		<div class="mui-content address-wrap">
+			<form class="login login-code">
+				<div class="mui-input-row">
+					<label></label>
+					<input type="number" placeholder="输入短信验证码" onkeyup="Login.changeCode();" id="code"></input>
+					<button class="mui-btn mui-btn-negative btn-repeat" disabled="disabled" id="rewire" type="button">重发<span id="time">(60)</span></button>
+				</div>
+				<button class="mui-btn mui-btn-negative login-btn" type="button" id="submitButton" disabled="disabled">开始使用</button>
+			</form>
+		</div>
+		<script src="../../js/jquery-2.1.4.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/common/appajax.js"></script>
+		<script src="../../js/common/const.js"></script>
+		<script src="../../js/common/mlogin.js"></script>
+		<script src="../../js/common/timer.js"></script>
+		<script src="../../js/view/login.js"></script>
+		<script>
+			var mobile;
+			$(function() { 
+				mui.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					mobile = self.mobile;
+					Login.rewireGetSmsCode();
+				})
+			})
+		</script>
+	</body>
+
+</html>

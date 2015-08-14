@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<style>
+		body,.mui-content{
+			background: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<script id="product-item" type="text/template">
+		{{~it.list:obj:index}}
+		<li class="mui-table-view-cell mui-media product-li" product_sort="{{=obj.product_sort}}" product_id="{{=obj.agency_product_id}}">
+			<input type="hidden" name="product_no" value="{{=obj.product_no}}" />
+			<div class="cateList-pic mui-pull-left J_toDetail">
+				{{ if(obj.product_status == "0"){ }}
+				<em class="shelf-off">已下架</em>
+				<span class="shelf-off-w"></span>
+				{{ } }}
+				<em class="soldout">售罄</em>
+				<span class="soldout-w"></span>
+				<a class="product-deatil-class2"><img src="{{=IMAGE_DOMAIN}}{{=obj.product_image}}{{=IMAGE_80_80}}" /></a>
+			</div>
+			<div class="mui-media-body">
+				<a class='mui-ellipsis-2 J_toDetail'>{{=obj.product_name}}</a>
+				<div class="prList-op">
+					<span class="cateList-price mui-pull-left">
+					<em>￥{{=obj.sale_price}}</em>
+					<del>￥{{=obj.market_price}}</del>
+				</span>
+					<button class="prList-cart mui-pull-right add-cart-class2" {{ if(obj.product_status=="0" ){ }}disabled="disabled" {{ } }}>
+						<span class="iconfont icon-lumigouff580e"></span>
+					</button>
+				</div>
+			</div>
+		</li>
+		{{~}}
+		<input type="hidden" class="list-size" value="{{=it.listSize}}" />
+	</script>
+	
+	<script id="cart-tmpl" type="text/template">
+		{{ if(it.num > 0){ }}
+			<span class='mui-badge'>{{=it.num}}</span> 
+		{{ } }}
+	</script>
+	<script id="param-tmpl" type="text/template">
+		{{=it.param}}
+	</script>
+	<div class="mui-content">
+		<h2 class="cateList-title" id="cateTitle"></h2>
+		<div id="pullrefresh" class="mui-scroll-wrapper" style="top:40px">
+			<div class="mui-scroll">
+				<ul class="mui-table-view prList" id="product-container">
+					
+				</ul>
+			</div>
+			<div class="cateList-cart"></div>
+			<div class="cateList-cart-icon" id="shopping-cart">
+				<span class="mui-icon iconfont icon-lumigouff580e" id="cart-container">
+			</span>
+			</div>
+		</div>
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/view/product.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script>
+	<script src="../../js/view/main.js" type="text/javascript"></script>
+	<script> 
+		var param;
+		var index;
+		window.addEventListener('product_category',function(event){
+			//获得事件参数
+			param  = event.detail.param;
+			index = event.detail.index;
+			Product.groupInit(param,index);
+		});
+		mui.init({
+			pullRefresh: {
+				container: '#pullrefresh',
+				up: {
+					contentrefresh : "正在加载...",
+  					contentnomore:'没有更多商品了',
+					callback:pullupload
+				}
+			}
+		});
+		function pullupload(){
+			Product.pageMore(param,index);
+		}
+		//商品查询-点击查看商品详情
+		$("body").on("tap",".J_toDetail",function(){
+			Home.productDetail($(this).parents(".product-li").find("input[name='product_no']").val());
+		});
+		//加入购物车
+		$("body").on("tap",".add-cart-class2",function(){
+			if($(this).attr("disabled") != "disabled"){
+				Product.addCart($(this).parent().parent().parent().find("input").val());
+			}else{
+				mui.toast("商品已下架!");
+			}
+		});
+		window.addEventListener('set',function(event){
+		  $('#cart-container').html("<span class='mui-badge'>"+event.detail.num+"</span>");
+		});
+	</script>
+</body>
+
+</html>

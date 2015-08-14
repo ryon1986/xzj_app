@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+<script id="cart-tmpl" type="text/template">
+	{{ if(it.code == "200"){ }}
+	<a id="shopping-cart">
+		<span class="mui-icon iconfont icon-shopping">
+				{{ if(it.num > 0){ }}
+					<span class="mui-badge">
+						{{=it.num}}
+					</span>
+				{{ } }}
+		</span>
+	</a>
+	<button class="mui-btn mui-btn-negative mui-pull-right" id="addCartCount" value="">加入购物车</button>
+	{{ } }}
+</script>
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+	  	<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back" ></a>
+	  	<!--<a class="mui-icon iconfont icon-gengduo mui-pull-right" id="quickHandle"></a>-->
+	  	<h1 class="mui-title">商品详情</h1>
+	</header>
+	<!--
+    	<div id="quickMenu" class="qMenu">
+		  <ul>
+		    <li><a href="#"><span class="mui-icon iconfont icon-shouye"></span>首页</a></li>
+		    <li><a href="#"><span class="mui-icon iconfont icon-category"></span>分类</a></li>
+		    <li><a href="#"><span class="mui-icon iconfont icon-gouwuche"></span>购物车</a></li>
+		    <li><a href="#"><span class="mui-icon iconfont icon-meicon"></span>我</a></li>
+		  </ul> 
+		  <div class="mui-popover-arrow mui-bottom" ></div> 
+		</div>
+    -->
+	<div class="mui-bar prDetail-cart" id="cart-container">
+		
+	</div>
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/view/product.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script> 
+	<script>
+		$(function(){
+			quickMenu();
+		});
+		//商品详情快捷菜单
+		function quickMenu(){
+			$("#quickHandle").on("tap",function(){
+				if($("#quickMenu").is(":hidden")){
+					$("#quickMenu").show();
+				}else{
+					$("#quickMenu").hide();
+				}
+			})
+		}
+		mui.init({
+			beforeback: function(){
+				if(flag == "refreshMain"){
+					var mainView = plus.webview.getWebviewById('main');
+					mui.fire(mainView,'main-refresh',{isdo:"true"});
+					var categoryListView = plus.webview.getWebviewById('categoryList');
+					mui.fire(categoryListView,'categoryList-refresh',{isdo:"true"});
+				}
+				if(flag == "refreshCart"){
+					var mainView = plus.webview.getWebviewById('shoppingCartList');
+					mui.fire(mainView,'shoppingCartList-refresh',{isdo:"true"});
+				}
+				return true;
+			},
+		    subpages:[{
+		      	url:"productDetail_main.html",
+		      	id:"productDetail_main",
+		      	styles:{
+		        	top:"44px",
+		        	bottom:"50px",
+		      	},
+		      	extras:{}//额外扩展参数
+		    }]
+		});
+		var flag = "normal";
+		window.addEventListener('product_detail',function(event){
+			if(event.detail.isdo == "true"){
+			  	//获得事件参数
+			 	var product_no = event.detail.product_no;
+			 	var product_status = event.detail.product_status;
+			 	var available_qty = event.detail.available_qty;
+			 	flag = event.detail.flag == 1 ? "refreshMain" : event.detail.flag == 2 ? "refreshCart" :"normal"; 
+			  	Product.ProductDetaiInit(product_no,product_status,available_qty);
+			}
+		});
+		window.addEventListener('set',function(event){
+		  $('.icon-shopping').html("<span class='mui-badge'>"+event.detail.num+"</span>");
+		});
+		//加入购物车
+		$("body").on("tap","#addCartCount",function(){
+			if($(this).attr("disabled") != "disabled"){
+				var detailPage =plus.webview.getWebviewById("productDetail_main");
+				mui.fire(detailPage,'to_product',{isdo:"true"});
+			}else{
+				if($(this).attr("data-result") == "1"){
+					mui.toast("商品已下架");
+				}
+				if($(this).attr("data-result") == "2"){
+					mui.toast("商品已售罄");
+				}
+			}
+		});
+		//商品详情 跳转购物车
+		$("body").on("tap","#shopping-cart",function(){
+			if(flag == "refreshMain"){
+				var mainView = plus.webview.getWebviewById('main');
+				mui.fire(mainView,'main-refresh',{isdo:"true"});
+				var categoryListView = plus.webview.getWebviewById('categoryList');
+				mui.fire(categoryListView,'categoryList-refresh',{isdo:"true"});
+			}
+			Product.toCartPage();
+		});
+	</script>
+</body>
+</html>

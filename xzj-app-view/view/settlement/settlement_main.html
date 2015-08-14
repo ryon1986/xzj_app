@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+
+<body>
+	<div class="mui-content">
+		<form>
+			<ul class="mui-table-view address-list">
+				<li class="mui-table-view-cell">
+				    <a class="mui-navigate-right" id="receiver-container">
+			    	
+				    </a>
+				    <script id="receiver" type="text/template">
+					{{ if(it.code=="200"){ }}
+						{{ if(it.memberReceiver != null){ }}
+							<input type="hidden" id="receiver_id" value="{{=it.memberReceiver.receiver_id}}" />
+							<span class="address-name">{{=it.memberReceiver.receiver_name}}&nbsp;&nbsp;&nbsp;&nbsp;{{=it.memberReceiver.receiver_mobile}}</span>
+							<span class="address-addr">{{=it.memberReceiver.receiver_province}}{{=it.memberReceiver.receiver_city}}{{=it.memberReceiver.receiver_district}}{{=it.memberReceiver.receiver_address}}</span>
+						{{ }else{ }}
+							<input type="hidden" id="receiver_id" value="-99" />
+							<span class="mui-icon iconfont icon-add"></span>请先填写收货地址
+						{{ } }}
+					{{ } }}
+					</script>
+				</li>
+			</ul>
+			<ul class="mui-table-view settlementList" id="shoppingCart-container" style="margin-top: 10px;padding-bottom:0">
+				
+			</ul>
+			<script id="shoppingCart" type="text/template" >
+				{{ if(it.code=="200"){ }}
+				<li class="mui-table-view-cell mui-media">订单</li>
+				{{~it.shoppingCartList:sc}}
+				<li class="mui-table-view-cell mui-media product-deatil-class">
+					<input type="hidden" value="{{=sc.product.product_no}}" />
+					<div class="cartList-pic mui-pull-left">
+						<a><img src="{{=IMAGE_DOMAIN}}{{=sc.product.productImage}}{{=IMAGE_80_80}}" /></a>
+					</div>
+					<div class="mui-media-body cartList-info">
+						<a class='mui-ellipsis-2'>{{=sc.product.product_name}}</a>
+						<div class="cartList-tax">
+							<span>价格:￥<label class="money-init">{{=sc.product.sale_price}}</label></span>
+							<span>税金:￥<label class="money-init">{{=sc.product.xy_price}}</label></span>
+						</div>
+						<div class="cartList-num">
+							数量 x {{=sc.qty}}
+						</div>
+					</div>
+				</li>
+				{{~}}
+				<li class="mui-table-view-cell mui-media" id="promoter">
+					<div class="mui-input-row">
+						<label>推广员</label>
+						<input type="text" id="user_name" value="无" disabled="disabled">
+						<input type="hidden" id="user_id" value="-99" >
+					</div>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<div class="mui-input-row">
+						<label style="width:0%"></label>
+						<input type="text" placeholder="给商家留言：" id="order_memo" style="width: 100%;">
+					</div>
+				</li>
+				{{ } }}
+			</script>
+			<ul class="mui-table-view settlement-info" id="settlement-container">
+				<li class="mui-table-view-cell">
+					<span>商品金额</span>
+					<em>￥<label id="product_price">0.00</label></em>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>运费</span>
+					<em>￥<label id="order_freight">0.00</label></em>
+				</li>
+				<li class="mui-table-view-cell">
+					<span>税金</span>
+					<em><del>￥<label id="order_xy_tax">0.00</label></del></em>
+				</li>
+				<li class="cart-tips" style="display: none;position:static;"><span class="iconfont icon-jinggao"></span>啊哦，海关规定购买多件的总价不能超过￥1000请您分多次购买</li>
+			</ul>
+		</form>
+	</div>
+	
+	<script src="../../js/jquery-2.1.4.min.js" ></script>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script> 
+	<script src="../../js/view/shoppingCart.js" type="text/javascript"></script>
+	<script src="../../js/view/settlement.js" type="text/javascript"></script>
+	<script>
+	window.addEventListener('settlement-main-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			var receiver_id = event.detail.receiver_id;
+			if(typeof(receiver_id)=="undefined"){
+				receiver_id = -99;
+			}
+			ShoppingCart.load(0);
+			Settlement.load(receiver_id);
+			repeat = true;
+		}
+	});
+	window.addEventListener('place-order',function(event){
+		if(event.detail.isdo == "true"){
+			Settlement.placeOrder();
+		}
+	});
+	
+	//地址
+	$("body").on("tap","#receiver-container",function(){
+		var receiverId = $("#receiver_id").val();
+		if(receiverId == -99){
+			var addAddress = plus.webview.getWebviewById('addAddress');
+			mui.fire(addAddress,'addRefresh',{flag:1,isdo:"true"});
+			mui.openWindow({
+			    id: 'addAddress'
+			});
+		}else{
+			var chooseAddress = plus.webview.getWebviewById('chooseAddress');
+			mui.fire(chooseAddress,'chooseAddress-refresh',{receiver_id:receiverId,isdo:"true"});
+			mui.openWindow({
+			    id: 'chooseAddress'
+			});
+		}
+	});
+	</script>
+</body>
+
+</html>

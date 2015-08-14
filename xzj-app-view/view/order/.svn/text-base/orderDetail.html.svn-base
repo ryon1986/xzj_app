@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+</head>
+<script id="orderDetail" type="text/template">
+	{{ if(it.code=="200"){ }}
+	<header class="mui-bar mui-bar-nav webview-bar">
+		<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+		<h1 class="mui-title">订单详情</h1>
+	</header>
+	<div class="mui-content">
+		<div class="orderStatus">
+			<h2><span class="mui-icon iconfont icon-dingdan"></span>订单状态：{{=it.orderDetail.orderStatus}}</h2>
+			<div class="orderNum">订单编号：{{=it.orderDetail.order_no}}<br />下单时间：{{=it.orderDetail.createTime}}</div>
+		</div>
+		<div class="orderAddr">
+			<h2 class="mui-clearfix">
+				<span class="mui-icon iconfont icon-dingwei mui-pull-left"></span>
+				<span class="mui-pull-left">收货人：{{=it.orderDetail.receiver_name}}</span>
+				<span class="mui-pull-right">{{=it.orderDetail.receiver_mobile}}</span>
+			</h2>
+			<p>{{=it.orderDetail.receiver_province}}{{=it.orderDetail.receiver_city}}{{=it.orderDetail.receiver_district}}{{=it.orderDetail.receiver_address}}</p>
+		</div>
+		<ul class="mui-table-view orderStatus-list">
+			<li class="mui-table-view-cell mui-media title">商品信息</li>
+			{{~it.orderDetail.products:product}}
+			{{ if(it.agency_no!=it.orderDetail.agency_no){ }}
+			<li class="mui-table-view-cell mui-media product-deatil-class" agency_no="{{=it.orderDetail.agency_no}}">
+			{{ }else{ }}
+			<li class="mui-table-view-cell mui-media product-deatil-class" agency_no="-99">
+			{{ } }}
+				<input type="hidden" value="{{=product.product_no}}" />
+				<div class="orderStatus-pic">
+					<a><img src="{{=IMAGE_DOMAIN}}{{=product.product_image}}{{=IMAGE_160_160}}" /></a>
+				</div>
+				<div class="mui-media-body orderStatus-title">
+					<a class='mui-ellipsis-2'>{{=product.product_name}}</a>
+					<p>
+						x {{=product.buy_qty}}
+					</p>
+				</div>
+				<div class="orderStatus-tax">
+					<span class="money-init">￥{{=product.sale_price}}</span>
+					<em>税率:{{=product.tax_scale}}%</em>
+				</div>
+			</li>
+			{{~}}
+		</ul>
+		{{ if(it.orderDetail.order_memo!=''){}}
+		<div class="orderStatus-remarks">备注：{{=it.orderDetail.order_memo}}</div>
+		{{ } }}
+		<ul class="mui-table-view orderStatus-info">
+			<li class="mui-table-view-cell">
+				<span>商品总额</span>
+				<em class="money-init">￥{{=it.orderDetail.product_price}}</em>
+			</li>
+			<li class="mui-table-view-cell">
+				<span>运费</span>
+				<em class="money-init">￥{{=it.orderDetail.order_freight}}</em>
+			</li>
+			<li class="mui-table-view-cell">
+				<span>税金</span>
+				<em class="money-init">￥{{=it.orderDetail.order_xy_tax}}</em>
+			</li>
+			<li class="mui-table-view-cell orderStatus-total">
+				<em class="money-init">￥{{=it.orderDetail.order_price}}</em>
+				<span>实际付款：</span>
+			</li>
+		</ul>
+	</div>
+	<div class="mui-bar orderStatus-op">
+		<a class="mui-tab-item" href="javascript:void(0)">
+		{{ if(it.orderDetail.order_status == 1){ }}
+			<button class="mui-btn mui-btn-outlined btn-cancel cancel-order" value="{{=it.orderDetail.order_no}}">取消订单</button>
+			<button class="mui-btn mui-btn-negative mui-btn-outlined pay-order" value="{{=it.orderDetail.order_no}}">付款</button>
+		{{ }else if(it.orderDetail.order_status == 3){ }}
+			<button class="mui-btn mui-btn-outlined btn-cancel Logistics" value="{{=it.orderDetail.order_no}}">查看物流</button>
+		{{ }else if(it.orderDetail.order_status == 4){ }}
+			<button class="mui-btn mui-btn-outlined btn-cancel Logistics" value="{{=it.orderDetail.order_no}}">查看物流</button>
+			{{ if(it.agency_no!=it.orderDetail.agency_no){ }}
+			<button class="mui-btn mui-btn-negative mui-btn-outlined repeatBuy" value="{{=it.orderDetail.order_no}}" agency_no="{{=it.orderDetail.agency_no}}">再次购买</button>
+			{{ }else{ }}
+			<button class="mui-btn mui-btn-negative mui-btn-outlined repeatBuy" value="{{=it.orderDetail.order_no}}" agency_no="-99">再次购买</button>
+			{{ } }}
+		{{ } }}
+		</a>
+	</div>
+	{{ } }}
+</script>
+<body id="orderDetail-container">
+	
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js" type="text/javascript"></script>
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script>
+	<script src="../../js/view/order.js" type="text/javascript"></script>
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script> 
+	<script src="../../js/view/main.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	window.addEventListener('detail-refresh',function(event){
+		if(event.detail.isdo == "true"){
+			var order_no = event.detail.order_no;
+			Order.detailLoad(order_no);
+		}
+	});
+	
+	$("body").on("tap",".cancel-order",function(){
+		var order_no = $(this).val();
+		mui.confirm('是否取消订单？', '',['确定', '取消'], function(e) {
+			if (e.index == 0) {
+				Order.cancel(order_no,function(){
+					var orderList = plus.webview.getWebviewById('orderList');
+					mui.fire(orderList,'order-refresh',{status:-99,isdo:"true"});
+				});
+				mui.back();
+			}
+		});
+	});
+	</script>
+</body>
+
+</html>

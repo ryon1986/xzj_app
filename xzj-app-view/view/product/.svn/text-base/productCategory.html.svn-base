@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title></title>
+	<link href="../../css/mui.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../../css/common.css" />
+	<link rel="stylesheet" href="../../css/iconfont.css" />
+	<style>
+		body,.mui-content{
+			background: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<header class="mui-bar mui-bar-nav webview-bar">
+	  	<a class="mui-icon mui-icon-left-nav mui-pull-left mui-action-back"></a>
+	  	<a class="mui-icon mui-icon-reply mui-pull-right"></a>
+	  	<a name="top" id="top"></a> 
+	  	<form  method="post" id="search-form" onsubmit="Home.productSearch($('#search').val());return false;">
+		  	<div class="mui-input-row cate-search">
+				<span class="mui-icon mui-icon-search"></span>
+				<input id="search" type="search" class="mui-input-clear" placeholder="搜索商品">
+			</div>
+		</form>
+	</header> 
+	
+	<script src="../../js/jquery-2.1.4.min.js" type="text/javascript"></script>
+	<script src="../../js/mui.min.js"></script> 
+	<script src="../../js/doT.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery.extend.dot.js" type="text/javascript"></script>
+	<script src="../../js/common/const.js" type="text/javascript"></script> 
+	<script src="../../js/common/appajax.js" type="text/javascript"></script>
+	<script src="../../js/common/mlogin.js" type="text/javascript"></script>
+	<script src="../../js/view/main.js" type="text/javascript"></script>
+	<script src="../../js/view/product.js" type="text/javascript"></script>
+	<script>
+		mui.init({
+		    subpages:[{
+		      url:"/view/product/productCategoryMain.html",
+		      id:"productCategoryMain",
+		      styles:{
+		        top:"50px",
+		        bottom:"0"
+		      }
+		    }]
+		});
+		window.addEventListener('product_category',function(event){
+			if(event.detail.isdo == "true"){
+				var param  = event.detail.param;
+				var index = event.detail.index;
+				var productCategoryMain = plus.webview.getWebviewById('productCategoryMain');
+				mui.fire(productCategoryMain,'product_category',{param:param,index:index,isdo:"true"});
+			}
+		});
+	</script>
+</body>
+
+</html>

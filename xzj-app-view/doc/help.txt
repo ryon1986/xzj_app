@@ -1,0 +1,33 @@
+一 在列表页预加载productDetail模板
+	mui.preload({
+		id:'productDetail',
+		url:'/view/product/productDetail.html'   
+	})
+
+二 在productDetail模板里自定的refresh方法
+	window.addEventListener('refresh',function(event){
+		//获得事件参数
+		var id = event.detail.id;
+		//刷新业务逻辑代码
+		......
+		......
+		
+	});
+
+三 列表页点击调用productDetail的自定义方法
+	var wv = plus.webview.getWebviewById('productDetail');
+	mui.fire(wv,'refresh',{
+		//自定义参数,例如ID
+		id:id
+	});
+四 列表页点击打开productDetail
+	mui.openWindow({
+		id:'productDetail'
+	});	
+首页图片160X160
+详情页图片350X350
+购物车订单列表80X80
+//加载中代码
+plus.nativeUI.showWaiting();
+//关闭加载中
+plus.nativeUI.closeWaiting()
